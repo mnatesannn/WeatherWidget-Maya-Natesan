@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<head>
+   <title>Weather Widget</title>
+   <link rel = "stylesheet" type = "text/css" href= weather.css >
+
+</head>
+
+<body>
+
+   <div class="weather" id="weatherWidget">
+      <div class="weather-loc"></div>
+      <div class="weather-humidity"></div>
+      <div class="weather-temp"></div>
+      <img class="weather-tomorrow" />
+      <img class="weather-dayaftertomorrow" />
+   </div>
+
+   <script>
+
+   function fetchWeather() {
+      fetch('https://classes.engineering.wustl.edu/cse330/content/weather_json.php')
+      .then(function(response) {
+         return response.json();
+      })
+         .then(function(data) {
+            display(JSON.stringify(data))
+      }).catch(function(error) {
+            console.log("Found an error " + error); 
+      });
+
+   }
+
+   function display(data){
+      
+      var weather_loc = document.getElementsByClassName('weather-loc');
+      var weather_humidity = document.getElementsByClassName('weather-humidity');
+      var weather_temp = document.getElementsByClassName('weather-temp');
+      var weather_tomorrow = document.getElementsByClassName('weather-tomorrow');
+      var weather_dayaftertomorrow = document.getElementsByClassName('weather-dayaftertomorrow');
+
+
+      var w_data = JSON.parse(data);
+
+      weather_loc[0].innerHTML = '<strong>'+w_data.location.city +'</strong>' + " " + w_data.location.state;
+      weather_humidity[0].innerHTML = w_data.atmosphere.humidity;
+      weather_temp[0].innerHTML = w_data.current.temp;
+
+
+      //making image for tomorrow 
+      var src = 'http://us.yimg.com/i/us/nws/weather/gr/$ds.png';
+      src = src.replace('$', w_data.tomorrow.code);
+      weather_tomorrow[0].src = src;
+      
+
+      //making image for day_after
+      var src = 'http://us.yimg.com/i/us/nws/weather/gr/$ds.png';
+      src = src.replace('$', w_data.dayafter.code)
+      weather_dayaftertomorrow[0].src = src;
+     
+
+   }
+   </script>
+   
+   
+   <script>
+      document.addEventListener("DOMContentLoaded", fetchWeather, false);
+   </script>
+   
+   </body>
+
+
+</html>
